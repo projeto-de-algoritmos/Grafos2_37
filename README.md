@@ -31,11 +31,14 @@ O vértice de origem é o vértice da cor verde e o vértice de destino é o vé
 ### Construção do Grafo
 ![Construção do Grafo](./assets/media/screenshotGraphBuild.png)
 
-### Aplicaçao do Algoritmo
+### Aplicação do Algoritmo
 ![Aplicação Dijkstra](./assets/media/screenshotDijkstra.png)
 
 ### Apresentação do Menor Caminho
+![Menor Caminho](./assets/media/screenshotPath.png)
 
+### Vídeo
+![Vídeo de Utilização](./assets/media/video.gif)
 
 ## Instalação 
 
