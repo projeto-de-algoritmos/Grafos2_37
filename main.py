@@ -243,6 +243,17 @@ class Game:
         self.screens['shortestPathPreviewPage'] = 1
 
     def shortestPathFindPage(self):
+        titleFont = pygame.font.Font('./assets/fonts/Roboto-Bold.ttf', 35)
+        title = titleFont.render(
+            'Aplicando Dijkstra no Grafo', True, colors[11]
+        )
+        titleArea = title.get_rect()
+        titleArea.center = (
+            int(self.resolution[0]/2),
+            int(title.get_height()/2) + 40
+        )
+        self.display.blit(title, titleArea)
+
         for i in nodesCenterPositions:
             for j in self.edgesWeights[i]:
                 pygame.draw.line(
@@ -317,7 +328,16 @@ class Game:
         self.dijkstra('A', 'H')
 
     def shortestPathPreviewPage(self):
-        print("Iniciando apresentação do menor caminho")
+        print("Iniciando apresentação do menor caminho...")
+
+        titleFont = pygame.font.Font('./assets/fonts/Roboto-Bold.ttf', 35)
+        title = titleFont.render('Menor Caminho', True, colors[12])
+        titleArea = title.get_rect()
+        titleArea.center = (
+            int(self.resolution[0]/2),
+            int(title.get_height()/2) + 40
+        )
+        self.display.blit(title, titleArea)
 
         for i in nodesCenterPositions:
             for j in self.edgesWeights[i]:
@@ -423,13 +443,13 @@ class Game:
             pygame.time.delay(400)
 
         print("Apresentação do menor caminho finalizada.")
-        print("Voltando para a tela inicial")
+        print("Voltando para a tela inicial...")
 
         for i in edgesDirectionsIndication:
             pygame.draw.circle(self.display, colors[0], i, 5)
 
         pygame.display.update()
-        pygame.time.delay(800)
+        pygame.time.delay(1454)
 
         self.screens['initialPage'] = 1
         self.screens['shortestPathFindPage'] = 0
