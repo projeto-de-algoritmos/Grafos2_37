@@ -14,7 +14,6 @@ colors = [
     (105, 105, 105),  # Cinza
     (240, 230, 140),  # Amarelo Khaki
     (255, 140, 0),  # Laranja Escuro
-
     (255, 165, 0),  # Laranja
     (255, 69, 0),  # Laranja Avermelhado
 ]
@@ -356,6 +355,9 @@ class Game:
                         self.display, colors[6], nodesCenterPositions[i], 20
                     )
                 elif j == 'H':
+                    pygame.draw.circle(
+                        self.display, colors[9], nodesCenterPositions[i], 20
+                    )
                     pygame.draw.circle(
                         self.display, colors[7], nodesCenterPositions[j], 20
                     )
