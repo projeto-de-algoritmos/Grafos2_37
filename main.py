@@ -42,7 +42,7 @@ class Game:
         self.display = display
         self.running = running
         self.screens = screens
-        self.isWeigthsChoicesDone = False
+        self.isWeightsChoicesDone = False
 
         self.edgesWeights = {
             'A': {'B': 0, 'C': 0},
@@ -54,6 +54,8 @@ class Game:
             'G': {'H': 0},
             'H': {}
         }
+
+        self.edges = {}
 
     def initialPage(self):
         icon = pygame.image.load('./assets/media/icon.png')
@@ -179,8 +181,8 @@ class Game:
         distances = {str(i): 2000 for i in self.edgesWeights}
         distances[startNode] = 0
 
-        edges = {str(i): (None, 2000) for i in self.edgesWeights}
-        edges[startNode] = (None, 0)
+        self.edges = {str(i): (None, 2000) for i in self.edgesWeights}
+        self.edges[startNode] = (None, 0)
 
         while distances:
             nearestNode = min(distances.keys(), key=(lambda k: distances[k]))
@@ -202,10 +204,11 @@ class Game:
                 pygame.display.update()
                 pygame.time.delay(200)
 
-                d = edges[nearestNode][1] + self.edgesWeights[nearestNode][i]
-                if d < edges[i][1]:
+                edgeWeight = self.edgesWeights[nearestNode][i]
+                d = self.edges[nearestNode][1] + edgeWeight
+                if d < self.edges[i][1]:
                     distances[i] = d
-                    edges[i] = (nearestNode, d)
+                    self.edges[i] = (nearestNode, d)
 
                 if i == 'H':
                     pygame.draw.circle(
@@ -252,7 +255,7 @@ class Game:
                         self.display, colors[9], nodesCenterPositions[j], 20
                     )
 
-                if not self.isWeigthsChoicesDone:
+                if not self.isWeightsChoicesDone:
                     print("Construido grafo na tela...")
                     print("Gerando peso de aresta aleatoriamente...")
 
@@ -263,27 +266,27 @@ class Game:
                 textFont = pygame.font.Font(
                     './assets/fonts/Roboto-Bold.ttf', 20
                 )
-                weigth = textFont.render(
+                weight = textFont.render(
                     str(self.edgesWeights[i][j]), True, colors[0]
                 )
-                weigthArea = weigth.get_rect()
+                weightArea = weight.get_rect()
 
                 w_W = nodesCenterPositions[i][0] + nodesCenterPositions[j][0]
                 w_H = nodesCenterPositions[i][1] + nodesCenterPositions[j][1]
-                weigthArea.center = (int(w_W/2), int(w_H/2))
+                weightArea.center = (int(w_W/2), int(w_H/2))
 
                 pygame.draw.rect(
                     self.display, colors[1],
                     (
-                        int(w_W/2) - int(weigth.get_width()/2) - 5,
-                        int(w_H/2) - int(weigth.get_height()/2) - 5,
-                        weigth.get_width() + 10, weigth.get_height() + 10
+                        int(w_W/2) - int(weight.get_width()/2) - 5,
+                        int(w_H/2) - int(weight.get_height()/2) - 5,
+                        weight.get_width() + 10, weight.get_height() + 10
                     )
                 )
 
-                self.display.blit(weigth, weigthArea)
+                self.display.blit(weight, weightArea)
 
-                if not self.isWeigthsChoicesDone:
+                if not self.isWeightsChoicesDone:
                     pygame.display.update()
                     pygame.time.delay(100)
 
@@ -300,7 +303,7 @@ class Game:
                     self.display, colors[9], nodesCenterPositions[i], 20
                 )
 
-            if not self.isWeigthsChoicesDone:
+            if not self.isWeightsChoicesDone:
                 pygame.display.update()
                 pygame.time.delay(100)
 
@@ -309,9 +312,128 @@ class Game:
             pygame.display.update()
             pygame.time.delay(100)
 
-        self.isWeigthsChoicesDone = True
+        self.isWeightsChoicesDone = True
 
         self.dijkstra('A', 'H')
+
+    def shortestPathPreviewPage(self):
+        print("Iniciando apresentação do menor caminho")
+
+        for i in nodesCenterPositions:
+            for j in self.edgesWeights[i]:
+                pygame.draw.line(
+                    self.display, colors[8],
+                    nodesCenterPositions[i], nodesCenterPositions[j], 3
+                )
+
+                if i > j:
+                    pygame.draw.circle(
+                        self.display, colors[9],
+                        nodesCenterPositions[j], 20
+                    )
+                if i == 'A':
+                    pygame.draw.circle(
+                        self.display, colors[6], nodesCenterPositions[i], 20
+                    )
+                elif j == 'H':
+                    pygame.draw.circle(
+                        self.display, colors[7], nodesCenterPositions[j], 20
+                    )
+                else:
+                    pygame.draw.circle(
+                        self.display, colors[9], nodesCenterPositions[i], 20
+                    )
+
+                textFont = pygame.font.Font(
+                    './assets/fonts/Roboto-Bold.ttf', 20
+                )
+                weight = textFont.render(
+                    str(self.edgesWeights[i][j]), True, colors[0]
+                )
+                weightArea = weight.get_rect()
+
+                w_W = nodesCenterPositions[i][0] + nodesCenterPositions[j][0]
+                w_H = nodesCenterPositions[i][1] + nodesCenterPositions[j][1]
+                weightArea.center = (int(w_W/2), int(w_H/2))
+
+                pygame.draw.rect(
+                    self.display, colors[1],
+                    (
+                        int(w_W/2) - int(weight.get_width()/2) - 5,
+                        int(w_H/2) - int(weight.get_height()/2) - 5,
+                        weight.get_width() + 10, weight.get_height() + 10
+                    )
+                )
+
+                self.display.blit(weight, weightArea)
+
+        for i in edgesDirectionsIndication:
+            pygame.draw.circle(self.display, colors[0], i, 5)
+
+        shortestPath = []
+        edge = 'H'
+        while edge != 'A':
+            shortestPath.append((self.edges[edge][0], edge))
+            edge = self.edges[edge][0]
+
+        for i in shortestPath:
+            pygame.draw.circle(
+                self.display, colors[6],
+                nodesCenterPositions[i[1]], 20
+            )
+            pygame.display.update()
+            pygame.time.delay(400)
+
+            pygame.draw.line(
+                self.display, colors[6],
+                nodesCenterPositions[i[0]], nodesCenterPositions[i[1]], 3
+            )
+
+            textFont = pygame.font.Font(
+                './assets/fonts/Roboto-Bold.ttf', 20
+            )
+            weight = textFont.render(
+                str(self.edgesWeights[i[0]][i[1]]), True, colors[0]
+            )
+            weightArea = weight.get_rect()
+
+            w_W = nodesCenterPositions[i[0]][0] + nodesCenterPositions[i[1]][0]
+            w_H = nodesCenterPositions[i[0]][1] + nodesCenterPositions[i[1]][1]
+            weightArea.center = (int(w_W/2), int(w_H/2))
+
+            pygame.draw.rect(
+                self.display, colors[1],
+                (
+                    int(w_W/2) - int(weight.get_width()/2) - 5,
+                    int(w_H/2) - int(weight.get_height()/2) - 5,
+                    weight.get_width() + 10, weight.get_height() + 10
+                )
+            )
+            self.display.blit(weight, weightArea)
+
+            pygame.display.update()
+            pygame.time.delay(400)
+
+            pygame.draw.circle(
+                self.display, colors[6],
+                nodesCenterPositions[i[0]], 20
+            )
+
+            pygame.display.update()
+            pygame.time.delay(400)
+
+        print("Apresentação do menor caminho finalizada.")
+        print("Voltando para a tela inicial")
+
+        for i in edgesDirectionsIndication:
+            pygame.draw.circle(self.display, colors[0], i, 5)
+
+        pygame.display.update()
+        pygame.time.delay(800)
+
+        self.screens['initialPage'] = 1
+        self.screens['shortestPathFindPage'] = 0
+        self.screens['shortestPathPreviewPage'] = 0
 
 
 def main():
@@ -342,6 +464,7 @@ def main():
             newGame.shortestPathFindPage()
         elif newGame.screens['shortestPathPreviewPage']:
             display.fill(colors[1])
+            newGame.shortestPathPreviewPage()
 
         pygame.display.update()
 
