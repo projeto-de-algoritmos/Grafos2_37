@@ -1,6 +1,5 @@
 import pygame
 import random
-# import time
 
 
 colors = [
@@ -10,14 +9,14 @@ colors = [
     (139, 0, 0),  # Vermelho Escuro
     (0, 0, 255),  # Azul
     (0, 0, 139),  # Azul Escuro
-
-    (105, 105, 105),  # Cinza
     (0, 255, 0),  # Verde
-    (255, 140, 0),  # Laranja Escuro
-    (255, 69, 0),  # Laranja Avermelhado
     (255, 215, 0),  # Ouro
+    (105, 105, 105),  # Cinza
     (240, 230, 140),  # Amarelo Khaki
-    (255, 165, 0)  # Laranja
+    (255, 140, 0),  # Laranja Escuro
+
+    (255, 165, 0),  # Laranja
+    (255, 69, 0),  # Laranja Avermelhado
 ]
 
 nodesCenterPositions = {
@@ -29,17 +28,6 @@ nodesCenterPositions = {
     'F': (430, 450),
     'G': (530, 200),
     'H': (730, 400)
-}
-
-adjacencyList = {
-    'A': ['B', 'C'],
-    'B': ['D', 'F'],
-    'C': ['D', 'E'],
-    'D': ['E', 'F'],
-    'E': ['G'],
-    'F': ['E', 'H'],
-    'G': ['H'],
-    'H': []
 }
 
 edgesDirectionsIndication = [
@@ -169,6 +157,7 @@ class Game:
                     and quitStart_Y <= mouse[1] <= quitStart_Y + quit_H + 20
                 ):
                     print("Encerrando o programa...")
+
                     self.running = False
 
                 start_W = sButtonText_W
@@ -179,25 +168,94 @@ class Game:
                     sButtonStart_Y <= mouse[1] <= sButtonStart_Y + start_H + 20
                 ):
                     print("Alterando tela...")
+
                     self.screens['initialPage'] = 0
+                    self.screens['shortestPathPreviewPage'] = 0
                     self.screens['shortestPathFindPage'] = 1
+
+    def dijkstra(self, startNode, endNode):
+        print("Iniciando Dijkstra...")
+
+        distances = {str(i): 2000 for i in self.edgesWeights}
+        distances[startNode] = 0
+
+        edges = {str(i): (None, 2000) for i in self.edgesWeights}
+        edges[startNode] = (None, 0)
+
+        while distances:
+            nearestNode = min(distances.keys(), key=(lambda k: distances[k]))
+            distances.pop(nearestNode)
+
+            pygame.draw.circle(
+                self.display, colors[10],
+                nodesCenterPositions[nearestNode], 20
+            )
+            pygame.display.update()
+            pygame.time.delay(200)
+
+            for i in self.edgesWeights[nearestNode]:
+
+                pygame.draw.circle(
+                    self.display, colors[10],
+                    nodesCenterPositions[i], 20
+                )
+                pygame.display.update()
+                pygame.time.delay(200)
+
+                d = edges[nearestNode][1] + self.edgesWeights[nearestNode][i]
+                if d < edges[i][1]:
+                    distances[i] = d
+                    edges[i] = (nearestNode, d)
+
+                if i == 'H':
+                    pygame.draw.circle(
+                        self.display, colors[7],
+                        nodesCenterPositions[i], 20
+                    )
+                else:
+                    pygame.draw.circle(
+                        self.display, colors[9],
+                        nodesCenterPositions[i], 20
+                    )
+                pygame.display.update()
+                pygame.time.delay(200)
+
+            if nearestNode == 'A':
+                pygame.draw.circle(
+                    self.display, colors[6],
+                    nodesCenterPositions[nearestNode], 20
+                )
+            else:
+                pygame.draw.circle(
+                    self.display, colors[9],
+                    nodesCenterPositions[nearestNode], 20
+                )
+            pygame.display.update()
+            pygame.time.delay(200)
+
+        print("Finalizando algoritmo...")
+
+        self.screens['initialPage'] = 0
+        self.screens['shortestPathFindPage'] = 0
+        self.screens['shortestPathPreviewPage'] = 1
 
     def shortestPathFindPage(self):
         for i in nodesCenterPositions:
-            for j in adjacencyList[i]:
+            for j in self.edgesWeights[i]:
                 pygame.draw.line(
-                    self.display, colors[2],
+                    self.display, colors[8],
                     nodesCenterPositions[i], nodesCenterPositions[j], 3
                 )
 
                 if i > j:
                     pygame.draw.circle(
-                        self.display, colors[5], nodesCenterPositions[j], 20
+                        self.display, colors[9], nodesCenterPositions[j], 20
                     )
 
                 if not self.isWeigthsChoicesDone:
                     print("Construido grafo na tela...")
                     print("Gerando peso de aresta aleatoriamente...")
+
                     self.edgesWeights[i][j] = random.choice(range(100))
                     pygame.display.update()
                     pygame.time.delay(100)
@@ -229,9 +287,18 @@ class Game:
                     pygame.display.update()
                     pygame.time.delay(100)
 
-            pygame.draw.circle(
-                self.display, colors[5], nodesCenterPositions[i], 20
-            )
+            if i == 'A':
+                pygame.draw.circle(
+                    self.display, colors[6], nodesCenterPositions[i], 20
+                )
+            elif i == 'H':
+                pygame.draw.circle(
+                    self.display, colors[7], nodesCenterPositions[i], 20
+                )
+            else:
+                pygame.draw.circle(
+                    self.display, colors[9], nodesCenterPositions[i], 20
+                )
 
             if not self.isWeigthsChoicesDone:
                 pygame.display.update()
@@ -239,13 +306,12 @@ class Game:
 
         for i in edgesDirectionsIndication:
             pygame.draw.circle(self.display, colors[0], i, 5)
+            pygame.display.update()
+            pygame.time.delay(100)
 
         self.isWeigthsChoicesDone = True
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                print("Encerrando o programa...")
-                self.running = False
+        self.dijkstra('A', 'H')
 
 
 def main():
@@ -261,7 +327,8 @@ def main():
     display = pygame.display.set_mode(resolution)
 
     screens = {
-        'initialPage': 1, 'shortestPathFindPage': 0
+        'initialPage': 1, 'shortestPathFindPage': 0,
+        'shortestPathPreviewPage': 0
     }
 
     newGame = Game(resolution, display, True, screens)
@@ -273,6 +340,8 @@ def main():
         elif newGame.screens['shortestPathFindPage']:
             display.fill(colors[1])
             newGame.shortestPathFindPage()
+        elif newGame.screens['shortestPathPreviewPage']:
+            display.fill(colors[1])
 
         pygame.display.update()
 
