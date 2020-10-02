@@ -4,14 +4,14 @@ import pygame
 
 
 colors = [
-    (255, 255, 255),  # Branco
     (0, 0, 0),  # Preto
-    (105, 105, 105),  # Cinza
-    (139, 0, 0),  # Vermelho Escuro
+    (255, 255, 255),  # Branco
     (255, 40, 0),  # Vermelho
+    (139, 0, 0),  # Vermelho Escuro
     (0, 0, 255),  # Azul
     (0, 0, 139),  # Azul Escuro
 
+    (105, 105, 105),  # Cinza
     (0, 255, 0),  # Verde
     (255, 140, 0),  # Laranja Escuro
     (255, 69, 0),  # Laranja Avermelhado
@@ -19,6 +19,24 @@ colors = [
     (240, 230, 140),  # Amarelo Khaki
     (255, 165, 0)  # Laranja
 ]
+
+graph = {
+    'A': {'B': 0, 'C': 0},
+    'B': {'D': 0, 'F': 0},
+    'C': {'D': 0, 'E': 0},
+    'D': {'E': 0, 'F': 0},
+    'E': {'G': 0},
+    'F': {'E': 0, 'H': 0}
+}
+
+A: (300, 70) 
+B: (450, 140)
+C: (150, 140)
+D: (300, 210)
+E: (150, 280)
+F: (450, 350)
+G: (200, 420)
+H: (400, 730)
 
 
 class Game:
@@ -31,22 +49,23 @@ class Game:
     def initialPage(self):
         icon = pygame.image.load('./assets/media/icon.png')
         self.display.blit(
-            icon, (int(self.resolution[0]/2 - icon.get_width()/2), 0)
+            pygame.transform.scale(icon, (200, 177)),
+            (int(self.resolution[0]/2 - 100), 40)
         )
 
         titleFont = pygame.font.Font('./assets/fonts/Roboto-Bold.ttf', 40)
-        title = titleFont.render('NetPath', True, colors[1])
+        title = titleFont.render('dPath', True, colors[1])
         titleArea = title.get_rect()
         titleArea.center = (
             int(self.resolution[0]/2),
-            int(title.get_height()/2) + icon.get_height()
+            int(title.get_height()/2) + 177 + 40 + 40
         )
         self.display.blit(title, titleArea)
 
         buttonsTextFont = pygame.font.Font(
             './assets/fonts/Roboto-Bold.ttf', 20
         )
-        quitButtonText = buttonsTextFont.render('SAIR', True, colors[0])
+        quitButtonText = buttonsTextFont.render('SAIR', True, colors[1])
         quitButtonText_W = quitButtonText.get_width()
         quitButtonText_H = quitButtonText.get_height()
 
@@ -71,7 +90,7 @@ class Game:
             )
         else:
             pygame.draw.rect(
-                self.display, colors[4],
+                self.display, colors[2],
                 (
                     quitStart_X, quitStart_Y,
                     quitButtonText_W + 40, quitButtonText_H + 20
@@ -80,32 +99,8 @@ class Game:
 
         self.display.blit(quitButtonText, (quitStart_X + 20, quitStart_Y + 10))
 
-        subtitleFont = pygame.font.Font('./assets/fonts/Roboto-Bold.ttf', 20)
-        subtitle = subtitleFont.render(
-            'Um pacote de dados está sendo enviado para um servidor.',
-            True, colors[2]
-        )
-        subtitleArea = subtitle.get_rect()
-        subtitleStart_Y = icon.get_height() + title.get_height() + 30
-        subtitleArea.center = (
-            int(self.resolution[0]/2),
-            int(subtitle.get_height()/2) + subtitleStart_Y
-        )
-        self.display.blit(subtitle, subtitleArea)
-        subtitle_1 = subtitleFont.render(
-            'Ajude-o a percorrer o menor caminho.',
-            True, colors[2]
-        )
-        subtitleArea_1 = subtitle_1.get_rect()
-        subtitleStart_Y_1 = subtitleStart_Y + subtitle.get_height() + 10
-        subtitleArea_1.center = (
-            int(self.resolution[0]/2),
-            int(subtitle_1.get_height()/2) + subtitleStart_Y_1
-        )
-        self.display.blit(subtitle_1, subtitleArea_1)
-
         startButtonText = buttonsTextFont.render(
-            'INICIAR JOGO', True, colors[0]
+            'ENCONTRAR MENOR CAMINHO', True, colors[1]
         )
         sButtonText_W = startButtonText.get_width()
         sButtonText_H = startButtonText.get_height()
@@ -114,7 +109,7 @@ class Game:
             self.resolution[0]/2 - sButtonText_W/2 - 20
         )
         sButtonStart_Y = (
-            subtitleStart_Y_1 + 65
+            177 + 40 + 40 + title.get_height() + 40
         )
         if (
             sButtonStart_X <= mouse[0] <= sButtonStart_X + sButtonText_W + 40
@@ -122,7 +117,7 @@ class Game:
             sButtonStart_Y <= mouse[1] <= sButtonStart_Y + sButtonText_H + 20
         ):
             pygame.draw.rect(
-                self.display, colors[6],
+                self.display, colors[5],
                 (
                     sButtonStart_X, sButtonStart_Y,
                     sButtonText_W + 40, sButtonText_H + 20
@@ -130,7 +125,7 @@ class Game:
             )
         else:
             pygame.draw.rect(
-                self.display, colors[5],
+                self.display, colors[4],
                 (
                     sButtonStart_X, sButtonStart_Y,
                     sButtonText_W + 40, sButtonText_H + 20
@@ -162,8 +157,7 @@ class Game:
                     sButtonStart_Y <= mouse[1] <= sButtonStart_Y + start_H + 20
                 ):
                     self.screens['initialPage'] = 0
-                    self.screens['questionPage'] = 1
-                    self.screens['answerPage'] = 0
+                    self.screens['searchPage'] = 1
 
 
 def main():
@@ -171,7 +165,7 @@ def main():
 
     resolution = (800, 600)
 
-    pygame.display.set_caption("NetPath")
+    pygame.display.set_caption("dPath")
 
     icon = pygame.image.load('./assets/media/icon.png')
     pygame.display.set_icon(icon)
@@ -179,19 +173,18 @@ def main():
     display = pygame.display.set_mode(resolution)
 
     screens = {
-        'initialPage': 1, 'questionPage': 0, 'answerPage': 0
+        'initialPage': 1, 'searchPage': 0
     }
 
     newGame = Game(resolution, display, True, screens)
 
     while newGame.running:
+        display.fill(colors[0])
+
         if newGame.screens['initialPage']:
-            display.fill(colors[0])
             newGame.initialPage()
-        elif newGame.screens['questionPage']:
-            display.fill(colors[1])
-        elif newGame.screens['answerPage']:
-            print("answerPage")
+        elif newGame.screens['searchPage']:
+            print("SearchPage")
 
         pygame.display.update()
 
