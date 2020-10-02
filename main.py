@@ -168,6 +168,7 @@ class Game:
                     quitStart_X <= mouse[0] <= quitStart_X + quit_W + 40
                     and quitStart_Y <= mouse[1] <= quitStart_Y + quit_H + 20
                 ):
+                    print("Encerrando o programa...")
                     self.running = False
 
                 start_W = sButtonText_W
@@ -177,6 +178,7 @@ class Game:
                     and
                     sButtonStart_Y <= mouse[1] <= sButtonStart_Y + start_H + 20
                 ):
+                    print("Alterando tela...")
                     self.screens['initialPage'] = 0
                     self.screens['shortestPathFindPage'] = 1
 
@@ -194,6 +196,8 @@ class Game:
                     )
 
                 if not self.isWeigthsChoicesDone:
+                    print("Construido grafo na tela...")
+                    print("Gerando peso de aresta aleatoriamente...")
                     self.edgesWeights[i][j] = random.choice(range(100))
                     pygame.display.update()
                     pygame.time.delay(100)
@@ -237,6 +241,11 @@ class Game:
             pygame.draw.circle(self.display, colors[0], i, 5)
 
         self.isWeigthsChoicesDone = True
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                print("Encerrando o programa...")
+                self.running = False
 
 
 def main():
