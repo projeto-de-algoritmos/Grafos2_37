@@ -1,7 +1,5 @@
 # dPath
 
-# NomedoProjeto
-
 **Número da Lista**: 2<br>
 **Conteúdo da Disciplina**: Grafos 2<br>
 
@@ -12,9 +10,32 @@
 
 ## Sobre 
  
+O objetivo do projeto é possibilitar a visualização da aplicação do algoritmo de Dijkstra, para encontrar o menor caminho entre duas arestas, em um grafo com pesos (arestas de diferentes tamanhos).
+
+O algoritmo é aplicado sobre o grafo representado na tela de maneira convencional. Esse grafo pode ser alterado no código fonte. 
+O vértice de origem é o vértice da cor verde e o vértice de destino é o vértice da cor ouro.
+
+É possível separar o projeto em:
+- Construção da representação do grafo
+    - Visualização em etapas    
+- Aplicação do algoritmo no grafo
+    - Visualização em etapas
+- Apresentação do menor caminho
+    - Visualização em etapas
 
 ## Screenshots
-Adicione 3 ou mais screenshots do projeto em funcionamento.
+
+### Tela Inicial
+![Tela Inicial](./assets/media/screenshotHomePage.png)
+
+### Construção do Grafo
+![Construção do Grafo](./assets/media/screenshotGraphBuild.png)
+
+### Aplicaçao do Algoritmo
+![Aplicação Dijkstra](./assets/media/screenshotDijkstra.png)
+
+### Apresentação do Menor Caminho
+
 
 ## Instalação 
 
@@ -43,8 +64,7 @@ make install
 ```
 make run
 ```
-
-## Outros 
+ 
 
 
 
