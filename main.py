@@ -42,17 +42,6 @@ adjacencyList = {
     'H': []
 }
 
-edgesWeights = {
-    'A': {'B': 0, 'C': 0},
-    'B': {'D': 0, 'F': 0},
-    'C': {'D': 0, 'E': 0},
-    'D': {'E': 0, 'F': 0},
-    'E': {'G': 0},
-    'F': {'E': 0, 'H': 0},
-    'G': {'H': 0},
-    'H': {}
-}
-
 edgesDirectionsIndication = [
     (206, 435), (216, 165), (317, 282), (317, 317), (380, 150), (392, 167),
     (403, 170), (410, 450), (418, 432), (510, 193), (710, 402), (715, 385)
@@ -65,7 +54,7 @@ class Game:
         self.display = display
         self.running = running
         self.screens = screens
-        self.completeInitialConfigurations = False
+        self.isWeigthsChoicesDone = False
 
         self.edgesWeights = {
             'A': {'B': 0, 'C': 0},
@@ -189,9 +178,9 @@ class Game:
                     sButtonStart_Y <= mouse[1] <= sButtonStart_Y + start_H + 20
                 ):
                     self.screens['initialPage'] = 0
-                    self.screens['searchPage'] = 1
+                    self.screens['shortestPathFindPage'] = 1
 
-    def searchPage(self):
+    def shortestPathFindPage(self):
         for i in nodesCenterPositions:
             for j in adjacencyList[i]:
                 pygame.draw.line(
@@ -204,28 +193,50 @@ class Game:
                         self.display, colors[5], nodesCenterPositions[j], 20
                     )
 
-                if not self.completeInitialConfigurations:
+                if not self.isWeigthsChoicesDone:
                     self.edgesWeights[i][j] = random.choice(range(100))
+                    pygame.display.update()
+                    pygame.time.delay(100)
 
-                textFont = pygame.font.Font('./assets/fonts/Roboto-Bold.ttf', 20)
-                print(i)
-                print(j)
-                weigth = textFont.render(str(self.edgesWeights[i][j]), True, colors[0])
-                weigthArea = weigth.get_rect()
-                weigthArea.center = (
-                    int((nodesCenterPositions[i][0] + nodesCenterPositions[j][0])/2),
-                    int((nodesCenterPositions[i][1] + nodesCenterPositions[j][1])/2),
+                textFont = pygame.font.Font(
+                    './assets/fonts/Roboto-Bold.ttf', 20
                 )
+                weigth = textFont.render(
+                    str(self.edgesWeights[i][j]), True, colors[0]
+                )
+                weigthArea = weigth.get_rect()
+
+                w_W = nodesCenterPositions[i][0] + nodesCenterPositions[j][0]
+                w_H = nodesCenterPositions[i][1] + nodesCenterPositions[j][1]
+                weigthArea.center = (int(w_W/2), int(w_H/2))
+
+                pygame.draw.rect(
+                    self.display, colors[1],
+                    (
+                        int(w_W/2) - int(weigth.get_width()/2) - 5,
+                        int(w_H/2) - int(weigth.get_height()/2) - 5,
+                        weigth.get_width() + 10, weigth.get_height() + 10
+                    )
+                )
+
                 self.display.blit(weigth, weigthArea)
+
+                if not self.isWeigthsChoicesDone:
+                    pygame.display.update()
+                    pygame.time.delay(100)
 
             pygame.draw.circle(
                 self.display, colors[5], nodesCenterPositions[i], 20
             )
 
+            if not self.isWeigthsChoicesDone:
+                pygame.display.update()
+                pygame.time.delay(100)
+
         for i in edgesDirectionsIndication:
             pygame.draw.circle(self.display, colors[0], i, 5)
 
-        self.completeInitialConfigurations = True
+        self.isWeigthsChoicesDone = True
 
 
 def main():
@@ -241,7 +252,7 @@ def main():
     display = pygame.display.set_mode(resolution)
 
     screens = {
-        'initialPage': 1, 'searchPage': 0
+        'initialPage': 1, 'shortestPathFindPage': 0
     }
 
     newGame = Game(resolution, display, True, screens)
@@ -250,9 +261,9 @@ def main():
         if newGame.screens['initialPage']:
             display.fill(colors[0])
             newGame.initialPage()
-        elif newGame.screens['searchPage']:
+        elif newGame.screens['shortestPathFindPage']:
             display.fill(colors[1])
-            newGame.searchPage()
+            newGame.shortestPathFindPage()
 
         pygame.display.update()
 
