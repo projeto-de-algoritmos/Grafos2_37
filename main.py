@@ -1,6 +1,6 @@
 import pygame
+import random
 # import time
-# import random
 
 
 colors = [
@@ -20,23 +20,43 @@ colors = [
     (255, 165, 0)  # Laranja
 ]
 
-graph = {
+nodesCenterPositions = {
+    'A': (70, 300),
+    'B': (220, 450),
+    'C': (230, 150),
+    'D': (330, 300),
+    'E': (400, 150),
+    'F': (430, 450),
+    'G': (530, 200),
+    'H': (730, 400)
+}
+
+adjacencyList = {
+    'A': ['B', 'C'],
+    'B': ['D', 'F'],
+    'C': ['D', 'E'],
+    'D': ['E', 'F'],
+    'E': ['G'],
+    'F': ['E', 'H'],
+    'G': ['H'],
+    'H': []
+}
+
+edgesWeights = {
     'A': {'B': 0, 'C': 0},
     'B': {'D': 0, 'F': 0},
     'C': {'D': 0, 'E': 0},
     'D': {'E': 0, 'F': 0},
     'E': {'G': 0},
-    'F': {'E': 0, 'H': 0}
+    'F': {'E': 0, 'H': 0},
+    'G': {'H': 0},
+    'H': {}
 }
 
-A: (300, 70) 
-B: (450, 140)
-C: (150, 140)
-D: (300, 210)
-E: (150, 280)
-F: (450, 350)
-G: (200, 420)
-H: (400, 730)
+edgesDirectionsIndication = [
+    (206, 435), (216, 165), (317, 282), (317, 317), (380, 150), (392, 167),
+    (403, 170), (410, 450), (418, 432), (510, 193), (710, 402), (715, 385)
+]
 
 
 class Game:
@@ -45,6 +65,18 @@ class Game:
         self.display = display
         self.running = running
         self.screens = screens
+        self.completeInitialConfigurations = False
+
+        self.edgesWeights = {
+            'A': {'B': 0, 'C': 0},
+            'B': {'D': 0, 'F': 0},
+            'C': {'D': 0, 'E': 0},
+            'D': {'E': 0, 'F': 0},
+            'E': {'G': 0},
+            'F': {'E': 0, 'H': 0},
+            'G': {'H': 0},
+            'H': {}
+        }
 
     def initialPage(self):
         icon = pygame.image.load('./assets/media/icon.png')
@@ -159,6 +191,42 @@ class Game:
                     self.screens['initialPage'] = 0
                     self.screens['searchPage'] = 1
 
+    def searchPage(self):
+        for i in nodesCenterPositions:
+            for j in adjacencyList[i]:
+                pygame.draw.line(
+                    self.display, colors[2],
+                    nodesCenterPositions[i], nodesCenterPositions[j], 3
+                )
+
+                if i > j:
+                    pygame.draw.circle(
+                        self.display, colors[5], nodesCenterPositions[j], 20
+                    )
+
+                if not self.completeInitialConfigurations:
+                    self.edgesWeights[i][j] = random.choice(range(100))
+
+                textFont = pygame.font.Font('./assets/fonts/Roboto-Bold.ttf', 20)
+                print(i)
+                print(j)
+                weigth = textFont.render(str(self.edgesWeights[i][j]), True, colors[0])
+                weigthArea = weigth.get_rect()
+                weigthArea.center = (
+                    int((nodesCenterPositions[i][0] + nodesCenterPositions[j][0])/2),
+                    int((nodesCenterPositions[i][1] + nodesCenterPositions[j][1])/2),
+                )
+                self.display.blit(weigth, weigthArea)
+
+            pygame.draw.circle(
+                self.display, colors[5], nodesCenterPositions[i], 20
+            )
+
+        for i in edgesDirectionsIndication:
+            pygame.draw.circle(self.display, colors[0], i, 5)
+
+        self.completeInitialConfigurations = True
+
 
 def main():
     pygame.init()
@@ -179,12 +247,12 @@ def main():
     newGame = Game(resolution, display, True, screens)
 
     while newGame.running:
-        display.fill(colors[0])
-
         if newGame.screens['initialPage']:
+            display.fill(colors[0])
             newGame.initialPage()
         elif newGame.screens['searchPage']:
-            print("SearchPage")
+            display.fill(colors[1])
+            newGame.searchPage()
 
         pygame.display.update()
 
