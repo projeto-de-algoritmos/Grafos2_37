@@ -39,6 +39,8 @@ O algoritmo é aplicado sobre o grafo representado na tela de maneira convencion
 ## Vídeo
 ![Vídeo de Utilização](./assets/media/video.gif)
 
+**[Versão MP4](./assets/media.video.mp4)**
+
 ## Instalação 
 
 **Linguagem**: Python3<br>
