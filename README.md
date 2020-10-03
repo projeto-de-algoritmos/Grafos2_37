@@ -37,7 +37,7 @@ O vértice de origem é o vértice da cor verde e o vértice de destino é o vé
 ### Apresentação do Menor Caminho
 ![Menor Caminho](./assets/media/screenshotPath.png)
 
-### Vídeo
+## Vídeo
 ![Vídeo de Utilização](./assets/media/video.gif)
 
 ## Instalação 
