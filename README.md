@@ -12,8 +12,7 @@
  
 O objetivo do projeto é possibilitar a visualização da aplicação do algoritmo de Dijkstra, para encontrar o menor caminho entre duas arestas, em um grafo com pesos (arestas de diferentes tamanhos).
 
-O algoritmo é aplicado sobre o grafo representado na tela de maneira convencional. Esse grafo pode ser alterado no código fonte. 
-O vértice de origem é o vértice da cor verde e o vértice de destino é o vértice da cor ouro.
+O algoritmo é aplicado sobre o grafo representado na tela de maneira convencional. O grafo pode ser alterado no código fonte, os pesos das arestas são definidos aleatoriamente e o vértice de origem do caminho é o vértice da cor verde e o de destino é o vértice da cor ouro. 
 
 É possível separar o projeto em:
 - Construção da representação do grafo
