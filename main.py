@@ -59,7 +59,7 @@ class Game:
     def initialPage(self):
         icon = pygame.image.load('./assets/media/icon.png')
         self.display.blit(
-            pygame.transform.scale(icon, (200, 177)),
+            pygame.transform.scale(icon, (200, 200)),
             (int(self.resolution[0]/2 - 100), 40)
         )
 
@@ -68,7 +68,7 @@ class Game:
         titleArea = title.get_rect()
         titleArea.center = (
             int(self.resolution[0]/2),
-            int(title.get_height()/2) + 177 + 40 + 40
+            int(title.get_height()/2) + 200 + 40 + 40
         )
         self.display.blit(title, titleArea)
 
